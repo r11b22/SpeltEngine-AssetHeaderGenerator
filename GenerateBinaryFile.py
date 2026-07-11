@@ -11,11 +11,11 @@ def header_to_binary(input_header_path, output_binary_path=None):
         print(f"Error: The file '{input_header_path}' could not be found.")
         return False
 
-    # Extract everything inside the curly braces { ... }
-    # This matches the array body even if it spans multiple lines
-    array_match = re.search(r"=\s*\{([^}]+)\};", content)
+    # Target the specific '_raw_data' array to extract its bytes,
+    # safely skipping the struct declaration and its instantiated package
+    array_match = re.search(r"_raw_data\[\]\s*=\s*\{([^}]+)\};", content)
     if not array_match:
-        print("Error: Could not find a valid C/C++ array format in the header file.")
+        print("Error: Could not find a valid '_raw_data' array format in the header file.")
         return False
 
     array_body = array_match.group(1)

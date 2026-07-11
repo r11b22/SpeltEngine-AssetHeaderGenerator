@@ -19,15 +19,32 @@ def binary_to_header(input_path, output_path=None):
         return False
 
     file_size = len(data)
+    VERSION_STR = "0.1.0"
 
     # Write the C++ header file
     with open(output_path, "w", encoding="utf-8") as f:
         # Include guards
         f.write("#pragma once\n\n")
 
-        # Array definition
-        f.write(f"// Automatically generated from {base_name}\n")
-        f.write(f"inline const unsigned char {var_name}[] = {{\n")
+        # Generator information and version tracking
+        f.write(f"// Generator Version: {VERSION_STR}\n")
+        f.write("// This file was generated using SpeltEngine-AssetHeaderGenerator.\n")
+        f.write("// Manually editing this file is not recommended and could lead to unexpected behaviour.\n")
+        f.write("\n")
+
+        # Definition of the Asset struct with macro guard to prevent redefinition errors
+        f.write("#ifndef EMBEDDED_ASSET_STRUCT\n")
+        f.write("#define EMBEDDED_ASSET_STRUCT\n")
+        f.write("struct EmbeddedAsset {\n")
+        f.write("    const char* version;\n")
+        f.write("    const unsigned char* data;\n")
+        f.write("    const unsigned int size;\n")
+        f.write("};\n")
+        f.write("#endif // EMBEDDED_ASSET_STRUCT\n\n")
+
+        # Internal raw array definition (marked inline to avoid multiple definitions)
+        f.write(f"// Automatically generated raw data from {base_name}\n")
+        f.write(f"inline const unsigned char {var_name}_raw_data[] = {{\n")
 
         # Format bytes into neat rows of 12 hex values
         row_bytes = []
@@ -47,8 +64,13 @@ def binary_to_header(input_path, output_path=None):
 
         f.write("};\n\n")
 
-        # Size definition
-        f.write(f"inline const unsigned int {var_name}_len = {file_size};\n")
+        # Struct instance instantiation
+        f.write(f"// Package containing the version, data pointer, and size\n")
+        f.write(f"inline const EmbeddedAsset {var_name} = {{\n")
+        f.write(f'    "{VERSION_STR}",\n')
+        f.write(f"    {var_name}_raw_data,\n")
+        f.write(f"    {file_size}\n")
+        f.write("};\n")
 
     print(f"Successfully generated: {output_path} ({file_size} bytes)")
     return True
