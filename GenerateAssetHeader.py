@@ -35,11 +35,13 @@ def binary_to_header(input_path, output_path=None):
         # Definition of the Asset struct with macro guard to prevent redefinition errors
         f.write("#ifndef EMBEDDED_ASSET_STRUCT\n")
         f.write("#define EMBEDDED_ASSET_STRUCT\n")
-        f.write("struct EmbeddedAsset {\n")
-        f.write("    const char* version;\n")
-        f.write("    const unsigned char* data;\n")
-        f.write("    const unsigned int size;\n")
-        f.write("};\n")
+        f.write("namespace Spelt {\n")
+        f.write("   struct EmbeddedAsset {\n")
+        f.write("       const char* version;\n")
+        f.write("       const unsigned char* data;\n")
+        f.write("       const unsigned int size;\n")
+        f.write("   };\n")
+        f.write("}\n")
         f.write("#endif // EMBEDDED_ASSET_STRUCT\n\n")
 
         # Internal raw array definition (marked inline to avoid multiple definitions)
