@@ -68,7 +68,7 @@ def binary_to_header(input_path, output_path=None):
 
         # Struct instance instantiation
         f.write(f"// Package containing the version, data pointer, and size\n")
-        f.write(f"inline const EmbeddedAsset {var_name} = {{\n")
+        f.write(f"inline const Spelt::EmbeddedAsset {var_name} = {{\n")
         f.write(f'    "{VERSION_STR}",\n')
         f.write(f"    {var_name}_raw_data,\n")
         f.write(f"    {file_size}\n")
